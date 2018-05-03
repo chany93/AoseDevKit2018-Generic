@@ -6,6 +6,7 @@ import java.util.List;
 import unitn.adk2018.intention.Intention;
 import unitn.adk2018.intention.ScheduledIntention;
 import unitn.adk2018.Agent;
+import unitn.adk2018.Logger;
 import unitn.adk2018.MaintenanceCondition;
 import unitn.adk2018.condition.TrueCondition;
 import unitn.adk2018.event.Event;
@@ -22,7 +23,7 @@ public class General_agent extends Agent {
 		
 		pushGoal ( new Postman_goal(), new TrueCondition() );
 		
-		if (debugOn)  System.out.println( getName() + " thread started!");
+		if (debugOn)  Logger.println( this, "thread started!");
 		while ( true ) {
 			/*
 			 * A FSM to execute everything

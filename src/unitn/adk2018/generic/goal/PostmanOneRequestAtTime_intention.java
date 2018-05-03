@@ -1,5 +1,6 @@
 package unitn.adk2018.generic.goal;
 
+import unitn.adk2018.Logger;
 import unitn.adk2018.MessageQueue;
 import unitn.adk2018.condition.ChangedCondition;
 import unitn.adk2018.condition.OrCondition;
@@ -15,7 +16,7 @@ public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
 	
 	@Override
 	public Next step0(IntentionInput in) {
-		if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": woke up" );
+		if (agent.debugOn) Logger.println( this, "woke up" );
 		final MessageQueue mqueue = in.agent.mqueue;
 		/*
 		 * empty the queue before processing. Take only the latest goal - all meta reasoning not supported!
@@ -30,21 +31,21 @@ public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
 		while ((m = mqueue.getIfAny()) != null) {
 //			if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing something: " + m );
 			if (m instanceof InformMessage) {  /// process information before goal
-				if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing InformMessage: " + m );
+				if (agent.debugOn) Logger.println( this, "processing InformMessage: " + m );
 				agent.pushGoal ( m, new TrueCondition() );
 			}
 			else if (m instanceof RequestMessage) {
 				if(lookForARequestMessageToProcess) {
 					if(request!=null) if (agent.debugOn)
-						System.out.println( agent.getName() + " " + this + ": flushing older RequestMessage: " + request + " with " + m );
+						Logger.println( this, "flushing older RequestMessage: " + request + " with " + m );
 					request = m;   /// discard previous goal if null or terminated.
 				}
 			}
 			else
-				if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": skipping unknown message" );
+				if (agent.debugOn) Logger.println( this, "skipping unknown message" );
 		}
 		if (lookForARequestMessageToProcess && request!=null) {
-			if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing RequestMessage: " + request );
+			if (agent.debugOn) Logger.println( this, "processing RequestMessage: " + request );
 			agent.pushGoal ( request, new TrueCondition() );
 			return waitUntil( this::step0, new OrCondition( new ChangedCondition(mqueue), request.wasHandled() ) );
 		}
