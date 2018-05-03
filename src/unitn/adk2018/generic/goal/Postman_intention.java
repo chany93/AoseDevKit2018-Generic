@@ -1,6 +1,5 @@
 package unitn.adk2018.generic.goal;
 
-import unitn.adk2018.Agent;
 import unitn.adk2018.MessageQueue;
 import unitn.adk2018.condition.ChangedCondition;
 import unitn.adk2018.condition.TrueCondition;
@@ -8,7 +7,6 @@ import unitn.adk2018.event.InformMessage;
 import unitn.adk2018.event.Message;
 import unitn.adk2018.event.RequestMessage;
 import unitn.adk2018.intention.Intention;
-import unitn.adk2018.intention.Intention.IntentionInput;
 
 public class Postman_intention extends Intention<Postman_goal> {
 	

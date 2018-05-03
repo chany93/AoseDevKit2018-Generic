@@ -17,7 +17,7 @@ public final class Sensing_intention extends Intention<Sensing_msg> {
 		for ( PddlClause c : agent.getBeliefs().getACopyOfDeclaredClauses().values() ) {
 			Message m = new Clause_msg( agent.getName(), in.event.getFrom(), c );
 			messages.add( m );
-			Environment.getEnvironment().sendMessage ( m );
+			Environment.sendMessage ( m );
 		}
 		
 		return waitFor(this::step1, 0);

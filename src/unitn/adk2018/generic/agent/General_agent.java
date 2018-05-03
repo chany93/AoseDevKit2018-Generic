@@ -2,6 +2,7 @@ package unitn.adk2018.generic.agent;
 
 
 import java.util.List;
+
 import unitn.adk2018.intention.Intention;
 import unitn.adk2018.intention.ScheduledIntention;
 import unitn.adk2018.Agent;
@@ -47,10 +48,10 @@ public class General_agent extends Agent {
 		 */
 		Intention<E> intention = null;
 		try {
-			List list = (List) eventDictionary.get ( event.getClass() );
-			for (Object i : list) {
-				Class<? extends Intention<E>> intentionClass = (Class<? extends Intention<E>>) i;
-					intention = intentionClass.newInstance();
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			List<Class<? extends Intention<E>>> list = (List) eventDictionary.get ( event.getClass() );
+			for (Class<? extends Intention<E>> intentionClass : list) {
+				intention = intentionClass.newInstance();
 				if (intention.context(this, event)) {
 					intention.agent = this;
 					intention.event = event;

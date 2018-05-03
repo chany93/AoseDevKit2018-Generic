@@ -10,7 +10,7 @@ public class PddlAction_intention extends Intention<PddlAction_msg> {
 	public Next step0(IntentionInput in) {
 //		if (agent.debugOn)
 //			System.out.println(agent.getName() + " PddlAction_intention: processing action " + in.event.action);
-		PddlAction action = Environment.getEnvironment().pddlDomain.generatePddlAction ( in.event.action );
+		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
 		if ( action.checkPreconditions(agent.getBeliefs(), in.event.args) )
 			return waitFor(this::stepAfterTimer, 2000); //continue after 2 seconds
 		else
@@ -18,7 +18,7 @@ public class PddlAction_intention extends Intention<PddlAction_msg> {
 	}
 	
 	public Next stepAfterTimer(IntentionInput in) {
-		PddlAction action = Environment.getEnvironment().pddlDomain.generatePddlAction ( in.event.action );
+		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
 		action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args );
 		return null; //success
 	}

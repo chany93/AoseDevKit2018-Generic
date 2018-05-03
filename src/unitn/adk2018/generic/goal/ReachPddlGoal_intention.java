@@ -1,7 +1,6 @@
 package unitn.adk2018.generic.goal;
 
 import unitn.adk2018.Environment;
-import unitn.adk2018.condition.TrueCondition;
 import unitn.adk2018.generic.message.Sensing_msg;
 import unitn.adk2018.intention.Intention;
 import unitn.adk2018.pddl.PddlClause;
@@ -15,14 +14,14 @@ public class ReachPddlGoal_intention extends Intention<ReachPddlGoal_goal> {
 		/*
 		 * Do sensing
 		 */
-		Sensing_msg sensing = new Sensing_msg( agent.getName(), Environment.getEnvironmentAgentName() );
-		Environment.getEnvironment().sendMessage( sensing );
+		Sensing_msg sensing = new Sensing_msg( agent.getName(), Environment.getEnvironmentAgent().getName() );
+		Environment.sendMessage( sensing );
 		return waitUntil( this::step1, sensing.wasHandled() );
 	}
 	
 	public Next step1(Intention<ReachPddlGoal_goal>.IntentionInput in) {
 		
-		String pddlDomainFile = Environment.getEnvironment().pddlDomain.domainFile;
+		String pddlDomainFile = Environment.getPddlDomain().domainFile;
 		PddlClause[] goal = in.event.pddlGoal;
 		
 		/*

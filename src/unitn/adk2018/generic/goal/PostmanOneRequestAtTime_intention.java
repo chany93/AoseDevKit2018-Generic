@@ -1,7 +1,6 @@
 package unitn.adk2018.generic.goal;
 
 import unitn.adk2018.MessageQueue;
-import unitn.adk2018.condition.AndCondition;
 import unitn.adk2018.condition.ChangedCondition;
 import unitn.adk2018.condition.OrCondition;
 import unitn.adk2018.condition.TrueCondition;
