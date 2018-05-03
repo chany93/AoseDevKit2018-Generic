@@ -28,14 +28,20 @@ public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
 		}
 		Message m = null;
 		while ((m = mqueue.getIfAny()) != null) {
-			if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing something: " + m );
+//			if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing something: " + m );
 			if (m instanceof InformMessage) {  /// process information before goal
 				if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing InformMessage: " + m );
 				agent.pushGoal ( m, new TrueCondition() );
 			}
-			if (m instanceof RequestMessage)
-				if(lookForARequestMessageToProcess)
+			else if (m instanceof RequestMessage) {
+				if(lookForARequestMessageToProcess) {
+					if(request!=null) if (agent.debugOn)
+						System.out.println( agent.getName() + " " + this + ": flushing older RequestMessage: " + request + " with " + m );
 					request = m;   /// discard previous goal if null or terminated.
+				}
+			}
+			else
+				if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": skipping unknown message" );
 		}
 		if (lookForARequestMessageToProcess && request!=null) {
 			if (agent.debugOn) System.out.println( agent.getName() + " " + this + ": processing RequestMessage: " + request );

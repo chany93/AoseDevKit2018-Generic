@@ -13,7 +13,7 @@ public final class Request_msg extends RequestMessage {
 	}
 	
 	public String toString() {
-		return super.toString() + ": " +  goal.getClass().getSimpleName() + ":" + goal;
+		return super.toString() + ": " + goal;
 	}
 	
 }
