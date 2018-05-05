@@ -34,7 +34,7 @@ To do so follow these steps:
 
 # AoseDevKit2018-Generic
 
-This project contains implementations of goals, messages, intentionis, and a generic agent with a generic control loop for the AoseDevKit2018 framework.
+This project contains implementations of goals, messages, intentions, and a generic agent with a generic control loop for the AoseDevKit2018 framework.
 
 Everything in this project has to stay domain-independent and should not modify the main logic of the core framework provided in the AoseDevKit2018-MultiAgentSystem project.
 
@@ -47,7 +47,7 @@ Goals and messages represent an objective that an agent want to achieve, without
 public class Postman_goal extends Goal {
 }
 ```
-They could eventually include parameters. For example:
+They could possibly include parameters. For example:
 ```java
 public class ReachPddlGoal_goal extends Goal {
 	public final PddlClause[] pddlGoal;
