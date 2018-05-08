@@ -79,7 +79,7 @@ public class PddlStep_intention extends Intention<PddlStep_goal> {
 
 #### Steps
 
-Each intention provides its implementation in separate steps (implemented as methods) that should not perform blocking code. The first step called when the intention is scheduled is the step0. Other steps can be defined as in the example of above.
+Each intention provides its implementation in separate steps (implemented as methods like this: Next step(IntentionInput in)) that should not perform blocking code. The first step called when the intention is scheduled is the step0. Other steps can be defined as in the example of above.
 
 Each step must return a Next object which can be conveniently created with the useful shortcut methods offered by the intention class:
 ```java
@@ -122,10 +122,11 @@ return waitFor(null, 0); //fail
 ### Description of available intentions 
 
 - Request_intention (Request_msg)
-    1. pushes to himself the goal attached to the message
+    1. pushes to himself the goal attached to the Request_msg message in the attribute Goal goal
 
 - ReachPddlGoal_intention (ReachPddlGoal_goal)
     1. sends a Sensing_msg to env agent
+    2. calls blackbox planner to generate a plan to achieve the PddlClause[] pddlGoal attached to the ReachPddlGoal_goal
     2. pushes a ExecutePddlPlan_goal to himself
     3. waits for its termination
 
