@@ -17,12 +17,12 @@ Everything in this project has to stay domain-independent and should not modify 
 
 ### Goals and messages
 
-Goals and messages represent an objective that an agent want to achieve, without the implementation on how to do it. For example:
+Goals and messages are both events that the agent can deal with by starting an intention, which is selected on the basis of the method doBDImetaReasoning specific for the type of agent. Events by themselves do not specify any implementation for their achievement. Here an example of goal without any parameter:
 ```java
 public class Postman_goal extends Goal {
 }
 ```
-They could possibly include parameters. For example:
+Eventual parameters can be included. For example:
 ```java
 public class ReachPddlGoal_goal extends Goal {
 	public final PddlClause[] pddlGoal;
@@ -40,19 +40,19 @@ All goals or messages should either extend unitn.adk2018.event.Goal or unitn.adk
         - unitn.adk2018.event.InformMessage
     - unitn.adk2018.event.Goal
 
-Goals differs from messages because they can be submitted to agents differently:
-- goals can only be submmitted internally by the agent to himself
-- messages instead can be posted to agents from outside
-    - request could be handled differently with respect to inform messages, depending on the postman intention used by the agent
+Differences between Goal, RequestMessage, and InformMessage are:
+- Goals can only be submmitted internally by the agent to himself and are immediately handled by the doBDImetaReasoning method of the agent, which, in the implementation of unitn.adk2018.generic.agent.General_agent, immediately schedules an intention.
+- Messages instead can be posted to agents from outside or by other agents. However, the message is not handled immediately, instead it is only putted in the message queue of the agent. Postman intention monitors this message queue and when something is posted, postamn intention is woke up and can finally handle the message by scheduling an intention.
+- RequestMessages could be handled differently with respect to InformMessages, depending on the postman intention used by the agent. PostmanEverythingInParallel_intention is the simplest implementation of a Postman and does not do any discrimination between inform and request messages. PostmanOneRequestAtTime_intention is instead a little bit more complicated.
 
 ### Intentions
 
-Intentions are the implementation on how to achieve a goal or a message.
-Depending on the configuration of agents, given a goal/message, zero or more intentions can be available to achieve the goal/message.
-A selection algorithm is available in unitn.adk2018.generic.agent.General_agent, where the first applicable intention is selected (given expression in the contex method).
+Intentions implement how to handle an event (achieve a goal or process a message).
+Depending on the configuration of agents, given an event, zero or more intentions can be available to handle it.
+The algorithm to select the correct intention given the goal must be implemented in the method doBDImetaReasoning of the Agent. An example is available in unitn.adk2018.generic.agent.General_agent, where the first applicable intention is selected (given the evaluation of the contex method).
 
-All intentions extend unitn.adk2018.intention.Intention by specifying the type of event that they handle.
-For example:
+All intentions extend unitn.adk2018.intention.Intention and specify the type of event handled.
+For example PddlStep_intention handles the goal PddlStep_goal:
 ```java
 public class PddlStep_intention extends Intention<PddlStep_goal> {
 	@Override
@@ -65,7 +65,8 @@ public class PddlStep_intention extends Intention<PddlStep_goal> {
 		msg = new PddlAction_msg ( agent.getName(), Environment.getEnvironmentAgent().getName(),
 				in.event.action, in.event.args );
 		sendMessage( msg );
-		return waitUntil( this::stepEnd, msg.wasHandled() ); //wait until action is done on environment then continue
+		//wait for the action in the message to be handled by envAgent and then reschedule next step
+		return waitUntil( this::stepEnd, msg.wasHandled() );
 	}
 	public Next stepEnd(IntentionInput in) {
 		if ( msg.wasHandledWithSuccess().isTrue() )
@@ -76,10 +77,46 @@ public class PddlStep_intention extends Intention<PddlStep_goal> {
 }
 ```
 
-Each intention provides its implementation in step0(IntentionInput in). Other steps can be defined as in the example of above. Each step must return a Next object which can be conveniently created with the useful shortcut methods offered by the intention class:
+#### Steps
+
+Each intention provides its implementation in separate steps (implemented as methods) that should not perform blocking code. The first step called when the intention is scheduled is the step0. Other steps can be defined as in the example of above.
+
+Each step must return a Next object which can be conveniently created with the useful shortcut methods offered by the intention class:
 ```java
 public final Next waitFor(final Function<IntentionInput, Next> nextstep, final long waitingTime);
 public final Next waitUntil(final Function<IntentionInput, Next> nextstep, final MaintenanceCondition maintenanceCondition);
+```
+- return something like this to wait for a specific amount of time
+	```java
+	return waitFor(this::nameOfStepToScheduleAfter500ms, 500); // to wait for 500 ms
+	```
+- to wait for some condition to became true use the classes available in the package unitn.adk2018.condition in the AoseDevKit2018-MultiAgentSystem project 
+	```java
+	return waitUntil(this::nameOfStepToScheduleAsSoonAsMsgIsHandled, msg.wasHandled());
+	```
+	
+#### Push goals or sending messages
+
+Within an intention it is possible to submit a goal to myself by doing the following. It is also possible to specify a maintenance condition different from the default TrueCondition, so to force the termination of the intention handling the goal in the case something happens. The same can be done with messages.
+```java
+agent.pushGoal ( goal, new TrueCondition() );
+Environment.sendMessage( msg );
+```
+At this point it is possible to let running this intention in parallel with the submitted goal, by continuing immediately with another step:
+```java
+return waitFor( this::step1, 0 );
+```
+Or wait for the submitted goal to be achieved before proceeding, by doing this:
+```java
+return waitUntil( this::step1, goal.wasHandled() );
+```
+
+#### Failure or success
+
+When no more steps are needed it is possible to make the intention ( and so the handled event/goal/message) succeed or fail.
+```java
+return null; //success
+return waitFor(null, 0); //fail
 ```
 
 ### Description of available intentions 
