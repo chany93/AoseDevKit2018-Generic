@@ -8,6 +8,7 @@ import unitn.adk2018.condition.TrueCondition;
 import unitn.adk2018.event.InformMessage;
 import unitn.adk2018.event.Message;
 import unitn.adk2018.event.RequestMessage;
+import unitn.adk2018.intention.ElaborationStatus;
 import unitn.adk2018.intention.Intention;
 
 public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
@@ -39,6 +40,11 @@ public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
 					if(request!=null) if (agent.debugOn)
 						Logger.println( this, "flushing older RequestMessage: " + request + " with " + m );
 					request = m;   /// discard previous goal if null or terminated.
+				}
+				else {
+					if (agent.debugOn)
+						Logger.println( this, "Rejecting RequestMessage: " + m );
+					m.status.set(ElaborationStatus.HANDLED_WITH_FAILURE);
 				}
 			}
 			else
