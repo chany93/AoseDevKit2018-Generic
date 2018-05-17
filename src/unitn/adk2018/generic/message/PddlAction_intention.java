@@ -19,8 +19,10 @@ public class PddlAction_intention extends Intention<PddlAction_msg> {
 	
 	public Next stepAfterTimer(IntentionInput in) {
 		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
-		action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args );
-		return null; //success
+		if ( action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args ) )
+			return null; //success
+		else
+			return waitFor(null, 0); //fail
 	}
 	
 	@Override
