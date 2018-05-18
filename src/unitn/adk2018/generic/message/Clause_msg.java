@@ -5,7 +5,7 @@ import unitn.adk2018.pddl.PddlClause;
 
 public final class Clause_msg extends InformMessage {
 	
-	private final PddlClause clause;
+	public final PddlClause clause;
 	
 	public Clause_msg(String _from, String _to, PddlClause _clause) {
 		super(_from, _to);

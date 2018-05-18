@@ -1,21 +1,20 @@
 package unitn.adk2018.generic.goal;
 
 import unitn.adk2018.event.Goal;
+import unitn.adk2018.pddl.PddlStep;
 
 public class PddlStep_goal extends Goal {
 	
-	public final String action;
-	public final String[] args;
+	public final PddlStep step;
 	
-	public PddlStep_goal ( String _action, String[] _args ) {
-		action = _action;
-		args = _args;
+	public PddlStep_goal ( PddlStep _step ) {
+		step = _step;
 	}
-
+	
 	public String toString() {
 		String text = "";
-		for(String a : args)
+		for(String a : step.getArgs())
 			text = text + ", " + a;
-		return super.toString() + ": " +  action + text;
+		return super.toString() + ": " +  step.getAction() + text;
 	}
 }

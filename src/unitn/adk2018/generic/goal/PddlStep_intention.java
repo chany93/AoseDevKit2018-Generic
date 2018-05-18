@@ -18,7 +18,7 @@ public class PddlStep_intention extends Intention<PddlStep_goal> {
 	@Override
 	public Next step0(IntentionInput in) {
 		msg = new PddlAction_msg ( agent.getName(), Environment.getEnvironmentAgent().getName(),
-				in.event.action, in.event.args );
+				event.step.action, event.step.args );
 		sendMessage( msg );
 		return waitUntil( this::stepEnd, msg.wasHandled() ); //wait until action is done on environment then continue
 	}

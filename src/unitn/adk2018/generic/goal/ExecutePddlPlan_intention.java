@@ -48,7 +48,7 @@ public class ExecutePddlPlan_intention extends Intention<ExecutePddlPlan_goal> {
 	}
 	
 	public Next submitGoal(IntentionInput in) {
-		currentActionEvent = new PddlStep_goal ( pddlStep.getAction(), pddlStep.getArgs() );
+		currentActionEvent = new PddlStep_goal ( pddlStep );
 		agent.pushGoal( currentActionEvent, new TrueCondition() );
 		return waitFor(this::step1, 0); //continue
 	}

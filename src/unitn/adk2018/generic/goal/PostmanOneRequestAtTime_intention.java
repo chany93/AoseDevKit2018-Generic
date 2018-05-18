@@ -37,8 +37,8 @@ public class PostmanOneRequestAtTime_intention extends Intention<Postman_goal> {
 			}
 			else if (m instanceof RequestMessage) {
 				if(lookForARequestMessageToProcess) {
-					if(request!=null) if (agent.debugOn)
-						Logger.println( this, "flushing older RequestMessage: " + request + " with " + m );
+//					if(request!=null) if (agent.debugOn)
+//						Logger.println( this, "flushing older RequestMessage: " + request + " with " + m );
 					request = m;   /// discard previous goal if null or terminated.
 				}
 				else {

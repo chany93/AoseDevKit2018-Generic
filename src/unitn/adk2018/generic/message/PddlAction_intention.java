@@ -1,6 +1,7 @@
 package unitn.adk2018.generic.message;
 
 import unitn.adk2018.Environment;
+import unitn.adk2018.Logger;
 import unitn.adk2018.intention.Intention;
 import unitn.adk2018.pddl.PddlAction;
 
@@ -12,15 +13,18 @@ public class PddlAction_intention extends Intention<PddlAction_msg> {
 //			System.out.println(agent.getName() + " PddlAction_intention: processing action " + in.event.action);
 		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
 		if ( action.checkPreconditions(agent.getBeliefs(), in.event.args) )
-			return waitFor(this::stepAfterTimer, 2000); //continue after 2 seconds
+			return waitFor(this::stepAfterTimer, 3000); //continue after 3 seconds
 		else
-			return waitFor(null, 500); //fail
+			return waitFor(null, 1000); //fail
 	}
 	
 	public Next stepAfterTimer(IntentionInput in) {
 		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
-		if ( action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args ) )
+		if ( action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args ) ) {
+			if (agent.debugOn)
+				Logger.println( this, "Beliefs changed: " + agent.getBeliefs().pddlClauses() );
 			return null; //success
+		}
 		else
 			return waitFor(null, 0); //fail
 	}
