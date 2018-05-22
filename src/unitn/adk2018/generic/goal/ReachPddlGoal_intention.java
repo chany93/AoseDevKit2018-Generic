@@ -19,6 +19,8 @@ public class ReachPddlGoal_intention extends Intention<ReachPddlGoal_goal> {
 		return waitUntil( this::step1, sensing.wasHandled() );
 	}
 	
+	ExecutePddlPlan_goal g;
+	
 	public Next step1(Intention<ReachPddlGoal_goal>.IntentionInput in) {
 		
 		String pddlDomainFile = Environment.getPddlDomain().domainFile;
@@ -47,7 +49,7 @@ public class ReachPddlGoal_intention extends Intention<ReachPddlGoal_goal> {
 		/*
 		 * Execute generated plan
 		 */
-		ExecutePddlPlan_goal g = new ExecutePddlPlan_goal ( plan );
+		g = new ExecutePddlPlan_goal ( plan );
 		agent.pushGoal ( g, in.event.wasNotHandled() );  
 		        /// note that the PDDL plan will fail if its goal is retracted (possibly forcely because of a meta-decision)
 //		GoalMsg_msg msg = new GoalMsg_msg( agent.getName(), Environment.getEnvironmentAgentName(), g );
@@ -56,7 +58,11 @@ public class ReachPddlGoal_intention extends Intention<ReachPddlGoal_goal> {
 	}
 	
 	public Next step2(Intention<ReachPddlGoal_goal>.IntentionInput in) {
-		return null;
+		if (g.wasHandledWithSuccess().isTrue()){
+			return null; // success
+		}
+		else
+			return waitFor(this::step0, 0); // fail
 	}
 
 

@@ -30,6 +30,8 @@ public class ExecutePddlPlan_intention extends Intention<ExecutePddlPlan_goal> {
 				return waitFor(this::endLoop, 0);
 			}
 			else {
+				if (currentActionEvent.wasHandledWithFailure().isTrue())
+					return waitFor(null, 0); // failure
 				return waitUntil ( this::endLoop, currentActionEvent.wasHandled() );
 			}
 		}
@@ -43,6 +45,8 @@ public class ExecutePddlPlan_intention extends Intention<ExecutePddlPlan_goal> {
 //			return waitFor(this::submitGoal, 0);
 //		}
 		else {
+			if (currentActionEvent.wasHandledWithFailure().isTrue())
+				return waitFor(null, 0); // failure
 			return waitUntil ( this::submitGoal, currentActionEvent.wasHandled() );
 		}
 	}
@@ -59,6 +63,8 @@ public class ExecutePddlPlan_intention extends Intention<ExecutePddlPlan_goal> {
 //					+ " plan execution " + (planResult?"COMPLETED":"NOT COMPLETED") + "."
 //					+ " Actions performed are: " + msg.getCompleted().size()
 //				);
+		if (currentActionEvent.wasHandledWithFailure().isTrue())
+			return waitFor(null, 0); // failure
 		return null;
 	}
 	
