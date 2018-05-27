@@ -53,9 +53,9 @@ public class General_agent extends Agent {
 			List<Class<? extends Intention<E>>> list = (List) eventDictionary.get ( event.getClass() );
 			for (Class<? extends Intention<E>> intentionClass : list) {
 				intention = intentionClass.newInstance();
+				intention.agent = this;
+				intention.event = event;
 				if (intention.context(this, event)) {
-					intention.agent = this;
-					intention.event = event;
 					break;
 				}
 			}
