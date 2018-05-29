@@ -15,5 +15,8 @@ public final class Clause_msg extends InformMessage {
 	public PddlClause getClause() {
 		return clause;
 	}
-	
+
+	public String toString() {
+		return super.toString() + "[" + clause + "]";
+	}
 }
