@@ -51,6 +51,8 @@ public class ReachPddlGoal_intention extends Intention<ReachPddlGoal_goal> {
 		 */
 		g = new ExecutePddlPlan_goal ( plan );
 		agent.pushGoal ( g, in.event.wasNotHandled() );  
+		
+		
 		        /// note that the PDDL plan will fail if its goal is retracted (possibly forcely because of a meta-decision)
 //		GoalMsg_msg msg = new GoalMsg_msg( agent.getName(), Environment.getEnvironmentAgentName(), g );
 //		Environment.getEnvironment().sendMessage( msg );

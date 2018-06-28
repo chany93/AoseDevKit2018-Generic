@@ -9,17 +9,19 @@ public class PddlAction_intention extends Intention<PddlAction_msg> {
 	
 	@Override
 	public Next step0(IntentionInput in) {
-//		if (agent.debugOn)
-//			System.out.println(agent.getName() + " PddlAction_intention: processing action " + in.event.action);
+//	if (agent.debugOn)
+//		System.out.println(agent.getName() + " PddlAction_intention: processing action " + in.event.action);
 		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
+		//System.out.println("Action_intention stepo0 :   " + agent.getBeliefs().pddlClauses() + "   "  + in.event.args);
 		if ( action.checkPreconditions(agent.getBeliefs(), in.event.args) )
-			return waitFor(this::stepAfterTimer, 3000); //continue after 3 seconds
+			return waitFor(this::stepAfterTimer, 2000); //continue after 3 seconds
 		else
 			return waitFor(null, 1000); //fail
 	}
 	
 	public Next stepAfterTimer(IntentionInput in) {
 		PddlAction action = Environment.getPddlDomain().generatePddlAction ( in.event.action );
+		 //System.out.println("Action_intentiom step1 :   " + agent.getBeliefs().pddlClauses() + "   "  + in.event.args);
 		if ( action.checkPreconditionsAndApply ( agent.getBeliefs(), in.event.args ) ) {
 			if (agent.debugOn)
 				Logger.println( this, "Beliefs changed: " + agent.getBeliefs().pddlClauses() );
